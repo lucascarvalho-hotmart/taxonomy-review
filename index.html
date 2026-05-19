@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Business Review — Taxonomia Hotmart</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.js"></script>
+</head>
+<body style="margin:0;background:#f9fafb;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
+<div id="root"></div>
+<script type="text/babel">
+
+const CARTEIRAS = [
+  {
+    id:"technology", nome:"Technology", resp:"Andre Cappello", emoji:"⚙️", spend:"R$ 650 Mi", cor:"#1e3a5f",
+    kpis:{ativas:12,migrar:7,sunset:8,novas:18},
+    problemas:[
+      {c:"SOFTWARE > CLOUD SERVICES AND AWS", itens:["AWS","GCP","Azure","MongoDB"], spend:"R$ 612 Mi", prob:"IaaS de provedores diferentes sem separação por fornecedor. Impossível benchmark e negociação.", sev:"critical"},
+      {c:"OTHERS SERVICES", itens:["Serviço Internet","Manutenção Elétrica"], spend:"R$ 16 Mi", prob:"Serviços de TI e telecom classificados em categoria genérica. Spend invisível.", sev:"critical"},
+      {c:"SOFTWARE > SOFTWARE RECURRENCE", itens:["Docker","WP Rocket","Sendgrid"], spend:"R$ 4,4 Mi", prob:"Infraestrutura misturada com plugins WordPress. Naturezas completamente distintas.", sev:"high"},
+      {c:"TECHNOLOGY > IT SERVICES", itens:["Seguro Cyber Risks (AON)","Seguro Responsab. Civil"], spend:"R$ 3,9 Mi", prob:"Seguros corporativos em TI. Deve migrar para Finance e Legal.", sev:"medium"},
+    ],
+    migracoes:[
+      {from:"SOFTWARE > CLOUD SERVICES AND AWS", to:"Cloud Services - IaaS", itens:"AWS - GCP - Azure", spend:"R$ 612 Mi", benefit:"Visibilidade por provedor. Negociacao consolidada e analise de custo por workload."},
+      {from:"SOFTWARE > SOFTWARE RECURRENCE", to:"Licencas - SaaS Core TI", itens:"Datadog - Okta - Sift Science - Zendesk - Intercom", spend:"R$ 80 Mi", benefit:"Separacao por finalidade. Facilita renovacoes e auditorias de licenca."},
+      {from:"SOFTWARE > SOFTWARE RECURRENCE", to:"Licencas - SaaS Administrativo", itens:"Figma - Notion - Atlassian - Dropbox", spend:"R$ 48 Mi", benefit:"Desacopla ferramentas admin das ferramentas core de TI."},
+      {from:"OTHERS SERVICES", to:"Telecomunicacoes - Internet e Conectividade", itens:"Cirion - Metrocarrier - Cablevision", spend:"R$ 16 Mi", benefit:"Spend de telecom sai de generico. Permite consolidacao de contratos entre entidades."},
+    ],
+    sunset:[
+      {name:"SOFTWARE > CLOUD SERVICES AND AWS", reason:"Sem separacao por provedor", to:"Technology - Cloud Services - IaaS"},
+      {name:"SOFTWARE > OTHERS SOFTWARE", reason:"Subcommodity generica", to:"Technology - Licencas - SaaS Core TI"},
+      {name:"CLOUD AND AWS SERVICES (duplicata)", reason:"Duplicidade", to:"Technology - Cloud Services"},
+      {name:"ADM SOFTWARE / SOFTWARE ADM", reason:"Duplicidade PT-BR e EN", to:"Technology - Licencas - SaaS Adm."},
+      {name:"SOFTWARE > DOMINIANS / SIGNATURES", reason:"Duplicidade mesmo escopo", to:"Technology - Licencas - Dominios"},
+      {name:"TECHNOLOGY > IT SERVICES (seguros)", reason:"Seguros nao pertencem a TI", to:"Finance e Legal - Seguros Corporativos"},
+      {name:"SOFTWARE > COMPUTER SOFTWARE", reason:"Duplicidade de SOFTWARE RECURRENCE", to:"Technology - Licencas - SaaS Core TI"},
+      {name:"OTHERS SERVICES (internet/telecom)", reason:"Telecom em categoria generica", to:"Technology - Telecomunicacoes"},
+    ],
+    acoes:[
+      {a:"Aprovar separacao de Cloud por provedor (AWS / GCP / Azure)", prazo:"Imediato", esf:"Baixo"},
+      {a:"Validar split de SOFTWARE RECURRENCE em SaaS Core TI vs. SaaS Adm.", prazo:"30 dias", esf:"Medio"},
+      {a:"Confirmar migracao de Seguros Cyber para Finance e Legal", prazo:"30 dias", esf:"Baixo"},
+      {a:"Aprovar nova commodity Telecomunicacoes e Conectividade", prazo:"30 dias", esf:"Baixo"},
+      {a:"Validar extincao das 8 commodities duplicadas/genericas", prazo:"90 dias", esf:"Medio"},
+    ],
+  },
+  {
+    id:"marketing", nome:"Marketing", resp:"Leticia Pereira", emoji:"📣", spend:"R$ 200 Mi", cor:"#b45309",
+    kpis:{ativas:6,migrar:5,sunset:5,novas:12},
+    problemas:[
+      {c:"MARKETING SERVICES > OTHER SERVICES MARKETING", itens:["Google Ads","Meta Ads","TikTok","Bing Ads","Agencias","Traducao"], spend:"R$ 150 Mi", prob:"Midia paga, agencias e traducao na mesma commodity. Impossivel analisar ROI por canal.", sev:"critical"},
+      {c:"HOTMART STORE > PRODUCTS STORE", itens:["Service Press Office","Service Advert Agency"], spend:"R$ 40 Mi", prob:"Servicos de marketing classificados como loja de produtos. Escopo totalmente incorreto.", sev:"critical"},
+      {c:"MARKETING SERVICES > MISCELLANEOUS SERVICES", itens:["Traducao","Consultoria MKT","Video Services"], spend:"R$ 8 Mi", prob:"Subcommodity generica. Mistura servicos de naturezas distintas.", sev:"high"},
+    ],
+    migracoes:[
+      {from:"OTHER SERVICES MARKETING", to:"Midia Paga - Social Media Ads", itens:"Meta Ads - TikTok Ads - LinkedIn Ads", spend:"R$ 66 Mi", benefit:"Visibilidade por plataforma. Analise de ROI por canal e benchmark de CPL/CPA."},
+      {from:"OTHER SERVICES MARKETING", to:"Midia Paga - Search Ads", itens:"Google Ads - Microsoft Bing Ads", spend:"R$ 10 Mi", benefit:"Separacao search vs. social. Gestao de budget por intencao de compra."},
+      {from:"OTHER SERVICES MARKETING", to:"Agencias - Agencia de Publicidade", itens:"Tidart - Potencialize Digital - Keeper Experience", spend:"R$ 50 Mi", benefit:"Gasto com agencias visivel e comparavel. Facilita pitch e consolidacao de contratos."},
+      {from:"HOTMART STORE > PRODUCTS STORE", to:"Agencias - Assessoria de Imprensa", itens:"Burson Cohn and Wolfe Colombia - Mexico", spend:"R$ 6,8 Mi", benefit:"Press office na categoria correta. Gestao de reputacao separada de midia paga."},
+      {from:"MISCELLANEOUS SERVICES", to:"Producao de Conteudo - Traducao e Revisao", itens:"ANX Traducoes - Martinelli - Reshape Tec.", spend:"R$ 4,6 Mi", benefit:"Spend com localizacao visivel. Facilita volume pricing com fornecedores."},
+    ],
+    sunset:[
+      {name:"MARKETING SERVICES > OTHER SERVICES MARKETING", reason:"Agrega tudo sem criterio", to:"Marketing - Midia Paga + Agencias + Producao"},
+      {name:"MARKETING SERVICES > MISCELLANEOUS SERVICES", reason:"Subcommodity generica", to:"Marketing - Producao de Conteudo"},
+      {name:"HOTMART STORE (servicos de marketing)", reason:"Servicos de MKT como loja de produtos", to:"Marketing - Agencias / Midia Paga"},
+      {name:"MARKETING SERVICES > VIDEO SERVICES", reason:"Deve estar em Producao Audiovisual", to:"Marketing - Producao - Audiovisual"},
+      {name:"MARKETING SERVICES > DESIGN SERVICES", reason:"Deve estar em Criacao e Design", to:"Marketing - Producao - Design"},
+    ],
+    acoes:[
+      {a:"Aprovar split de OTHER SERVICES MARKETING em Midia Paga + Agencias", prazo:"Imediato", esf:"Baixo"},
+      {a:"Validar separacao Social Media Ads vs. Search Ads", prazo:"30 dias", esf:"Baixo"},
+      {a:"Migrar servicos de MKT classificados em HOTMART STORE", prazo:"30 dias", esf:"Medio"},
+      {a:"Aprovar nova commodity Producao de Conteudo (Audiovisual, Design, Texto)", prazo:"30 dias", esf:"Baixo"},
+      {a:"Validar extincao das 5 commodities genericas", prazo:"90 dias", esf:"Medio"},
+    ],
+  },
+  {
+    id:"facilities", nome:"Facilities", resp:"Reginaldo Barbosa", emoji:"🏢", spend:"R$ 900 Mi", cor:"#115e59",
+    kpis:{ativas:10,migrar:8,sunset:7,novas:16},
+    problemas:[
+      {c:"ESSENTIAL BUILDING SERVICES > MAINTENANCE", itens:["Passagem Aerea Nacional","Passagem Internacional","Seguro Viagem"], spend:"R$ 600 Mi", prob:"Passagens aereas classificadas em manutencao predial. Erro critico de taxonomia.", sev:"critical"},
+      {c:"OTHERS SERVICES", itens:["Mesa de Escritorio","Porta Capsula Nespresso","Viagem Corporativa"], spend:"R$ 10 Mi", prob:"Mobiliario, viagem e manutencao misturados em categoria generica.", sev:"critical"},
+      {c:"PRODUCT > GENERAL PRODUCTS", itens:["Tubo de Cobre","Joelho de Aco","Revestimentos","Luminaria"], spend:"R$ 12 Mi", prob:"Materiais de construcao em commodity generica de produtos.", sev:"high"},
+    ],
+    migracoes:[
+      {from:"ESSENTIAL BUILDING SERVICES > MAINTENANCE", to:"Viagens - Passagens Aereas", itens:"Passagem Nacional - Internacional - Seguro Viagem", spend:"R$ 600 Mi", benefit:"Spend de viagem corretamente categorizado. Permite consolidacao de TMC e negociacao tarifaria."},
+      {from:"OTHERS SERVICES", to:"Mobiliario - Moveis e Estacoes de Trabalho", itens:"Mesa de Escritorio (Martin Office) - Cadeiras", spend:"R$ 4,2 Mi", benefit:"Mobiliario com categoria propria. Analise de custo por colaborador e gestao de ativos."},
+      {from:"PRODUCT > GENERAL PRODUCTS", to:"Servicos Prediais - Manutencao Eletrica e Hidraulica", itens:"Tubo de Cobre - Joelho de Aco Carbono", spend:"R$ 1,2 Mi", benefit:"Materiais de manutencao na categoria correta."},
+      {from:"OTHERS SERVICES", to:"Viagens - Agencia Corporativa (TMC)", itens:"Servico Corporativo de Viagem (Belvitur)", spend:"R$ 4 Mi", benefit:"Fee de TMC com categoria propria. Facilita benchmark de agencias."},
+    ],
+    sunset:[
+      {name:"ESSENTIAL BUILDING SERVICES > MAINTENANCE (viagens)", reason:"Passagens nao sao manutencao predial", to:"Facilities - Viagens - Passagens Aereas"},
+      {name:"OTHERS SERVICES (mobiliario e viagem)", reason:"Naturezas completamente distintas", to:"Facilities - Mobiliario / Viagens"},
+      {name:"PRODUCT > GENERAL PRODUCTS (insumos prediais)", reason:"Materiais de obra em produto generico", to:"Facilities - Servicos Prediais - Manutencao"},
+      {name:"ESSENTIAL BUILDING SERVICES > OTHERS ESSENTIAL", reason:"Subcommodity generica residual", to:"Distribuir pelas subcommodities de Facilities"},
+      {name:"STRUCTURE e FACILITIES (raiz)", reason:"Nivel 1 redundante com FACILITIES", to:"Facilities (estrutura consolidada)"},
+      {name:"TRAVEL AND ACCOMMODATION > OTHERS TRAVEL", reason:"Subcommodity residual generica", to:"Facilities - Viagens (subcommodities)"},
+      {name:"OTHERS SERVICES (viagem corporativa)", reason:"TMC em categoria generica", to:"Facilities - Viagens - Agencia Corporativa"},
+    ],
+    acoes:[
+      {a:"Aprovar migracao de Passagens Aereas para Viagens (saindo de Manutencao)", prazo:"Imediato", esf:"Baixo"},
+      {a:"Validar criacao de commodity Limpeza e Conservacao separada de Manutencao", prazo:"30 dias", esf:"Baixo"},
+      {a:"Migrar mobiliario de OTHERS SERVICES para Mobiliario - Moveis", prazo:"30 dias", esf:"Medio"},
+      {a:"Migrar materiais prediais de PRODUCT > GENERAL PRODUCTS", prazo:"30 dias", esf:"Medio"},
+      {a:"Confirmar separacao Alimentacao (Vale Refeicao vs. Snacks in-house)", prazo:"60 dias", esf:"Baixo"},
+      {a:"Validar extincao das 7 commodities obsoletas", prazo:"90 dias", esf:"Alto"},
+    ],
+  },
+  {
+    id:"finance", nome:"Finance & Legal", resp:"Reginaldo Barbosa", emoji:"⚖️", spend:"R$ 120 Mi", cor:"#4c1d95",
+    kpis:{ativas:7,migrar:4,sunset:5,novas:10},
+    problemas:[
+      {c:"ACCOUNTING > CONSULTING SERVICES", itens:["KPMG","Mazars","BDO","Baker McKenzie","Consultoria RH","Consultoria TI"], spend:"R$ 102 Mi", prob:"Auditoria, juridico, tributario, RH e TI na mesma commodity. Impossivel analisar por natureza.", sev:"critical"},
+      {c:"LEGAL > OTHERS LEGAL", itens:["Custas processuais","Taxas judiciais"], spend:"N/D", prob:"Subcommodity generica em Legal. Custos processuais precisam de visibilidade propria.", sev:"high"},
+      {c:"ACCOUNTING > OTHERS ACCOUNTING", itens:["Taxas diversas","Honorarios contabeis"], spend:"N/D", prob:"Residual generico em Accounting. Impede analise de custo contabil real.", sev:"medium"},
+    ],
+    migracoes:[
+      {from:"ACCOUNTING > CONSULTING SERVICES", to:"Auditoria - Auditoria Externa (Big 4)", itens:"PwC - KPMG - BDO - Mazars - WithumSmith", spend:"R$ 22 Mi", benefit:"Honorarios de auditoria com categoria propria. Facilita benchmark e RFP com Big 4."},
+      {from:"ACCOUNTING > CONSULTING SERVICES", to:"Servicos Juridicos - Assessoria Corporativa", itens:"Baker McKenzie - Pinheiro Neto - Boontje - Holland Knight", spend:"R$ 40 Mi", benefit:"Honorarios advocaticios saem de Accounting. Visibilidade do custo juridico por entidade."},
+      {from:"ACCOUNTING > CONSULTING SERVICES", to:"Consultoria Tributaria - Assessoria Tax", itens:"Sovos Compliance - Mazars Colombia - KPMG Meijburg", spend:"R$ 27 Mi", benefit:"Tax advisory com categoria propria. Separa compliance de planejamento tributario."},
+      {from:"ACCOUNTING > CONSULTING SERVICES (RH e TI)", to:"Talent / Technology (resp.)", itens:"Consultoria RH (KPMG) - Consultoria TI (Leadcomm)", spend:"R$ 13 Mi", benefit:"Servicos de RH e TI saem de Finance. Spend alocado na carteira correta."},
+    ],
+    sunset:[
+      {name:"ACCOUNTING > CONSULTING SERVICES", reason:"Agrega auditoria, juridico, tributario, RH e TI", to:"4 commodities especificas por natureza"},
+      {name:"ACCOUNTING > OTHERS ACCOUNTING", reason:"Subcommodity generica residual", to:"Finance - Servicos Contabeis (especifico)"},
+      {name:"LEGAL > OTHERS LEGAL", reason:"Subcommodity generica em Legal", to:"Finance - Contencioso - Custas Processuais"},
+      {name:"ACCOUNTING > AUDIT FEES (inativo)", reason:"Duplicidade com ACCOUNTING FEES", to:"Finance - Auditoria - Honorarios"},
+      {name:"ACCOUNTING > ACCOUNTING CONSULTING (inativo)", reason:"Duplicidade com CONSULTING SERVICES", to:"Finance - Consultoria Contabil"},
+    ],
+    acoes:[
+      {a:"Aprovar split de CONSULTING SERVICES em 4 commodities distintas", prazo:"Imediato", esf:"Baixo"},
+      {a:"Validar migracao de Honorarios Juridicos para Servicos Juridicos", prazo:"30 dias", esf:"Baixo"},
+      {a:"Confirmar migracao de Tax Advisory para Consultoria Tributaria", prazo:"30 dias", esf:"Baixo"},
+      {a:"Migrar Consultoria RH e TI para as carteiras corretas", prazo:"60 dias", esf:"Medio"},
+      {a:"Validar extincao das 5 commodities duplicadas/genericas", prazo:"90 dias", esf:"Medio"},
+    ],
+  },
+  {
+    id:"talent", nome:"Talent", resp:"Reginaldo Barbosa", emoji:"👥", spend:"R$ 16,8 Bi", cor:"#1f2937",
+    kpis:{ativas:8,migrar:6,sunset:6,novas:14},
+    problemas:[
+      {c:"OTHERS SERVICES", itens:["Assistencia Medica (Bradesco)","Gympass / Wellhub","Limpeza Predial"], spend:"R$ 16,5 Bi", prob:"Plano de saude com limpeza predial na mesma commodity. Spend de People completamente invisivel.", sev:"critical"},
+      {c:"TALENT > OTHERS TALENT", itens:["Previdencia Privada (Sul America)","Other operating costs"], spend:"R$ 2,1 Bi", prob:"Subcommodity generica com itens de alto valor. Sem visibilidade para negociacao.", sev:"critical"},
+      {c:"ACCOUNTING > CONSULTING SERVICES", itens:["Consultoria RH (KPMG, Mazars)","Headhunters"], spend:"R$ 74,9 Mi", prob:"Servicos de RH classificados em Finance. Impede analise do custo de aquisicao de talentos.", sev:"high"},
+      {c:"SOFTWARE > SOFTWARE HIRING", itens:["LinkedIn Recruiter","Consultoria RH"], spend:"R$ 4,8 Mi", prob:"Recrutamento misturado com software. Commodity incorreta.", sev:"medium"},
+    ],
+    migracoes:[
+      {from:"OTHERS SERVICES", to:"Saude e Bem-Estar - Plano de Saude", itens:"Bradesco Saude - Sul America", spend:"R$ 15,7 Bi", benefit:"Benchmark de custo per capita e negociacao consolidada com operadoras por entidade."},
+      {from:"TALENT > WELLNESS AND HEALTH", to:"Saude e Bem-Estar - Plano Odontologico", itens:"Sul America - OdontoPrev", spend:"R$ 590 Mi", benefit:"Gestao independente. Comparacao entre operadoras facilitada."},
+      {from:"OTHERS SERVICES", to:"Saude e Bem-Estar - Bem-Estar", itens:"Gympass / Wellhub - Saude Mental", spend:"R$ 269 Mi", benefit:"Commodity propria para wellbeing. Permite medir ROI de saude preventiva."},
+      {from:"TALENT > OTHERS TALENT", to:"Beneficios - Seguros de Vida e Previdencia", itens:"Prudential - Sul America Previdencia", spend:"R$ 2,4 Bi", benefit:"Visibilidade total de protecao financeira. Facilita RFP com seguradoras."},
+      {from:"SOFTWARE > SOFTWARE HIRING", to:"Recrutamento - Plataformas Digitais", itens:"LinkedIn Recruiter - ATS", spend:"R$ 4,2 Mi", benefit:"Recrutamento na commodity correta. Desacopla de licencas de software."},
+      {from:"ACCOUNTING > CONSULTING SERVICES", to:"Recrutamento - Consultorias e Headhunters", itens:"KPMG RH - The Bridge - Instituto SP", spend:"R$ 610 Mi", benefit:"Custo de talent acquisition sai de Finance. Analise real por nivel e perfil."},
+    ],
+    sunset:[
+      {name:"OTHERS SERVICES (itens Talent)", reason:"Mistura naturezas incompativeis", to:"TALENT - Saude e Bem-Estar"},
+      {name:"TALENT - OTHERS TALENT", reason:"Subcommodity generica alto valor", to:"TALENT - Beneficios - Seguros"},
+      {name:"TALENT - WELLNESS AND HEALTH", reason:"Escopo amplo, sera desmembrada", to:"TALENT - Saude (3 commodities)"},
+      {name:"TALENT - TALENT COST", reason:"Agrupa VA/VR/VT sem criterio", to:"TALENT - Beneficios - Monetarios"},
+      {name:"SOFTWARE - SOFTWARE HIRING", reason:"Recrutamento nao e software", to:"TALENT - Recrutamento - Plataformas"},
+      {name:"ACCOUNTING - CONSULTING SERVICES (RH)", reason:"RH classificado em Finance", to:"TALENT - Recrutamento - Consultorias"},
+    ],
+    acoes:[
+      {a:"Aprovar nova estrutura de 6 commodities de Nivel 2 para Talent", prazo:"Imediato", esf:"Baixo"},
+      {a:"Validar migracao dos itens de OTHERS SERVICES para Saude", prazo:"30 dias", esf:"Medio"},
+      {a:"Confirmar separacao Plano Medico vs. Odontologico", prazo:"30 dias", esf:"Baixo"},
+      {a:"Aprovar criacao da commodity Bem-Estar (Gympass / Wellhub)", prazo:"30 dias", esf:"Baixo"},
+      {a:"Definir owner de commodity para Recrutamento e Selecao", prazo:"60 dias", esf:"Alto"},
+      {a:"Validar extincao das 6 commodities obsoletas", prazo:"90 dias", esf:"Medio"},
+    ],
+  },
+];
+
+const SEV_BG  = {critical:"#fee2e2",high:"#fef9c3",medium:"#f0fdf4"};
+const SEV_BD  = {critical:"#fca5a5",high:"#fde047",medium:"#86efac"};
+const SEV_TX  = {critical:"#b91c1c",high:"#a16207",medium:"#15803d"};
+const SEV_LBL = {critical:"🔴 Critico",high:"🟡 Alto",medium:"🟢 Medio"};
+const ESF_BG  = {Baixo:"#dcfce7",Medio:"#fef9c3",Alto:"#fee2e2"};
+const ESF_TX  = {Baixo:"#166534",Medio:"#713f12",Alto:"#991b1b"};
+const STABS   = ["Diagnostico","Migracoes","Sunset","Aprovacao","Retorno MDM"];
+const STABS_E = ["📊","🏗️","🗑️","📋","💬"];
+
+function buildDoc(c,gestor,dec,com,obs){
+  const ap=Object.values(dec).filter(v=>v==="ap").length;
+  const aj=Object.values(dec).filter(v=>v==="aj").length;
+  const tot=c.acoes.length;
+  const linhas=c.acoes.map((a,i)=>{
+    const d=dec[i]==="ap"?"APROVADO":dec[i]==="aj"?"REQUER AJUSTE":"PENDENTE";
+    return (i+1)+". ["+d+"] "+a.a+" | "+a.prazo+(com[i]?"\n   >> "+com[i]:"");
+  });
+  return ["================================================","  RETORNO - CARTEIRA "+c.nome.toUpperCase(),"================================================","Responsavel: "+gestor,"Data: "+new Date().toLocaleDateString("pt-BR"),"Aprovados: "+ap+"/"+tot+" | Ajustes: "+aj+"/"+tot+" | Pendentes: "+(tot-ap-aj)+"/"+tot,"","-- DECISOES --------------------------------------------",...linhas,"","-- OBSERVACOES -----------------------------------------",obs||"(sem observacoes)","","================================================","  procurement@hotmart.com","================================================"].join("\n");
+}
+
+function Painel({c}){
+  const [st,setSt]=React.useState(0);
+  const [exp,setExp]=React.useState(null);
+  const [dec,setDec]=React.useState({});
+  const [com,setCom]=React.useState({});
+  const [obs,setObs]=React.useState("");
+  const [gestor,setG]=React.useState(c.resp);
+  const [cp,setCp]=React.useState(false);
+  const toggle=(i,v)=>setDec(p=>({...p,[i]:p[i]===v?null:v}));
+  const setc=(i,v)=>setCom(p=>({...p,[i]:v}));
+  const ap=Object.values(dec).filter(v=>v==="ap").length;
+  const aj=Object.values(dec).filter(v=>v==="aj").length;
+  const tot=c.acoes.length;
+  const aval=ap+aj;
+  const copiar=()=>{navigator.clipboard.writeText(buildDoc(c,gestor,dec,com,obs)).then(()=>{setCp(true);setTimeout(()=>setCp(false),2500);});};
+  const card=(bg,bd,children)=>(<div style={{background:bg,border:"1px solid "+bd,borderRadius:12,padding:16,marginBottom:12}}>{children}</div>);
+  const tag=(bg,tx,txt)=>(<span style={{background:bg,color:tx,borderRadius:6,padding:"2px 8px",fontSize:11,fontWeight:700,marginRight:4}}>{txt}</span>);
+  return(
+    <div>
+      <div style={{display:"flex",gap:6,marginBottom:16,flexWrap:"wrap"}}>
+        {STABS.map((t,i)=>(
+          <button key={i} onClick={()=>setSt(i)} style={{padding:"7px 14px",borderRadius:8,fontSize:12,fontWeight:600,cursor:"pointer",border:"none",background:st===i?"#111827":"#f3f4f6",color:st===i?"#fff":"#374151"}}>
+            {STABS_E[i]} {t}
+          </button>
+        ))}
+      </div>
+      {st===0&&(
+        <div>
+          {card("#fff","#e5e7eb",<div><p style={{fontWeight:700,margin:"0 0 4px"}}>Por que precisamos mudar?</p><p style={{color:"#6b7280",fontSize:14,margin:0}}>A estrutura atual mistura categorias de naturezas distintas, tornando impossivel analisar o spend real e negociar de forma consolidada com fornecedores.</p></div>)}
+          {c.problemas.map((p,i)=>(
+            <div key={i} style={{background:SEV_BG[p.sev],border:"1px solid "+SEV_BD[p.sev],borderRadius:12,padding:16,marginBottom:10}}>
+              <div style={{display:"flex",justifyContent:"space-between",flexWrap:"wrap",gap:8}}>
+                <div style={{flex:1}}>
+                  <span style={{fontSize:11,fontWeight:700,color:SEV_TX[p.sev]}}>{SEV_LBL[p.sev]}</span>
+                  <p style={{fontWeight:700,fontSize:13,margin:"4px 0",fontFamily:"monospace"}}>{p.c}</p>
+                  <p style={{color:"#374151",fontSize:13,margin:"4px 0 8px"}}>{p.prob}</p>
+                  <div style={{display:"flex",flexWrap:"wrap",gap:4}}>
+                    {p.itens.map((it,j)=>(<span key={j} style={{background:"rgba(255,255,255,0.7)",border:"1px solid #d1d5db",borderRadius:20,padding:"2px 8px",fontSize:11,color:"#374151"}}>{it}</span>))}
+                  </div>
+                </div>
+                <div style={{textAlign:"right",minWidth:80}}>
+                  <p style={{fontSize:11,color:"#9ca3af",margin:0}}>Spend</p>
+                  <p style={{fontWeight:700,margin:0}}>{p.spend}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {st===1&&(
+        <div>
+          {card("#fff","#e5e7eb",<div><p style
+={{fontWeight:700,margin:"0 0 4px"}}>Migracoes Propostas</p><p style={{color:"#6b7280",fontSize:14,margin:0}}>Clique em cada item para ver o beneficio esperado.</p></div>)}
+          {c.migracoes.map((m,i)=>(
+            <div key={i} style={{background:"#fff",border:"1px solid "+(exp===i?"#93c5fd":"#e5e7eb"),borderRadius:12,padding:14,marginBottom:10,cursor:"pointer"}} onClick={()=>setExp(exp===i?null:i)}>
+              <div style={{display:"flex",justifyContent:"space-between",gap:8,flexWrap:"wrap"}}>
+                <div style={{flex:1}}>
+                  <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:6}}>
+                    <span style={{background:"#fee2e2",color:"#b91c1c",borderRadius:6,padding:"2px 8px",fontSize:11,fontWeight:700,textDecoration:"line-through",fontFamily:"monospace"}}>{m.from}</span>
+                    <span style={{fontSize:12,color:"#9ca3af",fontWeight:700}}>→</span>
+                    <span style={{background:"#dcfce7",color:"#166534",borderRadius:6,padding:"2px 8px",fontSize:11,fontWeight:700}}>{m.to}</span>
+                  </div>
+                  <p style={{fontSize:12,color:"#6b7280",margin:0}}>{m.itens}</p>
+                </div>
+                <div style={{textAlign:"right",minWidth:80}}>
+                  <p style={{fontSize:11,color:"#9ca3af",margin:0}}>Spend</p>
+                  <p style={{fontWeight:700,fontSize:13,margin:0}}>{m.spend}</p>
+                </div>
+              </div>
+              {exp===i&&(<div style={{marginTop:10,paddingTop:10,borderTop:"1px solid #f3f4f6"}}>
+                <p style={{fontSize:11,fontWeight:700,color:"#9ca3af",margin:"0 0 4px",textTransform:"uppercase"}}>Beneficio Esperado</p>
+                <p style={{fontSize:13,color:"#374151",margin:0}}>{m.benefit}</p>
+              </div>)}
+            </div>
+          ))}
+        </div>
+      )}
+      {st===2&&(
+        <div>
+          {card("#fff","#e5e7eb",<div><p style={{fontWeight:700,margin:"0 0 4px"}}>Commodities para Desativar (Sunset)</p><p style={{color:"#6b7280",fontSize:14,margin:0}}>Apos aprovacao, serao bloqueadas para novos pedidos. Migracao dos itens existentes em ate 90 dias pelo time de MDM.</p></div>)}
+          {c.sunset.map((s,i)=>(
+            <div key={i} style={{background:"#fff",border:"1px solid #fecaca",borderRadius:12,padding:14,marginBottom:10}}>
+              <div style={{display:"flex",justifyContent:"space-between",gap:8,flexWrap:"wrap"}}>
+                <div style={{flex:1}}>
+                  <p style={{fontWeight:700,color:"#dc2626",fontSize:13,margin:"0 0 4px",textDecoration:"line-through",fontFamily:"monospace"}}>🚫 {s.name}</p>
+                  <p style={{fontSize:12,color:"#6b7280",margin:0}}>{s.reason}</p>
+                </div>
+                <span style={{background:"#dcfce7",color:"#166534",borderRadius:6,padding:"3px 10px",fontSize:11,fontWeight:700,whiteSpace:"nowrap"}}>✅ {s.to}</span>
+              </div>
+            </div>
+          ))}
+          <div style={{background:"#fefce8",border:"1px solid #fde047",borderRadius:12,padding:14}}>
+            <p style={{fontSize:13,color:"#713f12",margin:0}}>⚠️ <strong>Acao MDM pos-aprovacao:</strong> bloqueio de novas POs nas commodities acima. Pedidos em aberto nao sao afetados.</p>
+          </div>
+        </div>
+      )}
+
+      {st===3&&(
+        <div>
+          {card("#fff","#e5e7eb",<div><p style={{fontWeight:700,margin:"0 0 4px"}}>Checklist de Aprovacao</p><p style={{color:"#6b7280",fontSize:14,margin:0}}>Avalie cada acao. Ao finalizar, va para Retorno MDM para gerar o documento de retorno.</p></div>)}
+          {c.acoes.map((item,i)=>(
+            <div key={i} style={{background:dec[i]==="ap"?"#f0fdf4":dec[i]==="aj"?"#fefce8":"#fff",border:"1px solid "+(dec[i]==="ap"?"#86efac":dec[i]==="aj"?"#fde047":"#e5e7eb"),borderRadius:12,padding:14,marginBottom:10}}>
+              <p style={{fontWeight:600,fontSize:13,margin:"0 0 8px"}}>{item.a}</p>
+              <div style={{display:"flex",gap:6,marginBottom:10,flexWrap:"wrap"}}>
+                <span style={{background:"#f3f4f6",color:"#6b7280",borderRadius:6,padding:"2px 8px",fontSize:11}}>🗓️ {item.prazo}</span>
+                <span style={{background:ESF_BG[item.esf],color:ESF_TX[item.esf],borderRadius:6,padding:"2px 8px",fontSize:11,fontWeight:700}}>💪 {item.esf}</span>
+              </div>
+              <div style={{display:"flex",gap:8}}>
+                <button onClick={()=>toggle(i,"ap")} style={{flex:1,padding:"6px",borderRadius:8,fontSize:12,fontWeight:700,cursor:"pointer",background:dec[i]==="ap"?"#22c55e":"#fff",color:dec[i]==="ap"?"#fff":"#16a34a",border:"1.5px solid "+(dec[i]==="ap"?"#22c55e":"#86efac")}}>✅ Aprovar</button>
+                <button onClick={()=>toggle(i,"aj")} style={{flex:1,padding:"6px",borderRadius:8,fontSize:12,fontWeight:700,cursor:"pointer",background:dec[i]==="aj"?"#eab308":"#fff",color:dec[i]==="aj"?"#fff":"#a16207",border:"1.5px solid "+(dec[i]==="aj"?"#eab308":"#fde047")}}>⚠️ Requer Ajuste</button>
+              </div>
+            </div>
+          ))}
+          <div style={{background:"#fff",border:"1px solid #e5e7eb",borderRadius:12,padding:14}}>
+            <div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}>
+              <span style={{fontSize:12,fontWeight:700,color:"#374151"}}>Progresso</span>
+              <span style={{fontSize:12,fontWeight:700,color:"#374151"}}>{aval}/{tot}</span>
+            </div>
+            <div style={{background:"#e5e7eb",borderRadius:99,height:8,marginBottom:8}}>
+              <div style={{background:"#22c55e",borderRadius:99,height:8,width:((aval/tot)*100)+"%",transition:"width 0.4s"}}/>
+            </div>
+            <div style={{display:"flex",gap:16,fontSize:12,color:"#6b7280"}}>
+              <span>✅ <strong style={{color:"#16a34a"}}>{ap}</strong> aprovados</span>
+              <span>⚠️ <strong style={{color:"#a16207"}}>{aj}</strong> ajustes</span>
+              <span>⏳ <strong>{tot-aval}</strong> pendentes</span>
+            </div>
+            {aval===tot&&<p style={{color:"#16a34a",fontWeight:700,fontSize:13,textAlign:"center",marginTop:8}}>🎉 Tudo avaliado! Va para Retorno MDM.</p>}
+          </div>
+        </div>
+      )}
+
+      {st===4&&(
+        <div>
+          {card("#fff","#e5e7eb",<div><p style={{fontWeight:700,margin:"0 0 4px"}}>Gerar Retorno para o Time de MDM</p><p style={{color:"#6b7280",fontSize:14,margin:0}}>Preencha os campos e copie o documento. Cole em e-mail ou ticket para o time de MDM.</p></div>)}
+          <div style={{background:"#fff",border:"1px solid #e5e7eb",borderRadius:12,padding:16,marginBottom:12}}>
+            <p style={{fontSize:11,fontWeight:700,color:"#9ca3af",textTransform:"uppercase",margin:"0 0 6px"}}>Seu nome (Responsavel)</p>
+            <input type="text" value={gestor} onChange={e=>setG(e.target.value)} style={{width:"100%",border:"1px solid #e5e7eb",borderRadius:8,padding:"8px 12px",fontSize:13,boxSizing:"border-box",outline:"none"}}/>
+          </div>
+          <div style={{background:"#fff",border:"1px solid #e5e7eb",borderRadius:12,padding:16,marginBottom:12}}>
+            <p style={{fontSize:11,fontWeight:700,color:"#9ca3af",textTransform:"uppercase",margin:"0 0 10px"}}>Comentarios por acao</p>
+            {c.acoes.map((a,i)=>(
+              <div key={i} style={{marginBottom:10,padding:10,border:"1px solid #f3f4f6",borderRadius:8}}>
+                <div style={{display:"flex",gap:6,alignItems:"center",marginBottom:6,flexWrap:"wrap"}}>
+                  <span style={{background:dec[i]==="ap"?"#dcfce7":dec[i]==="aj"?"#fef9c3":"#f3f4f6",color:dec[i]==="ap"?"#166534":dec[i]==="aj"?"#713f12":"#9ca3af",borderRadius:99,padding:"2px 8px",fontSize:11,fontWeight:700}}>
+                    {dec[i]==="ap"?"✅ Aprovado":dec[i]==="aj"?"⚠️ Ajuste":"⏳ Pendente"}
+                  </span>
+                  <span style={{fontSize:11,color:"#6b7280"}}>{a.a}</span>
+                </div>
+                <textarea rows={2} value={com[i]||""} onChange={e=>setc(i,e.target.value)} placeholder="Observacao opcional..." style={{width:"100%",border:"1px solid #e5e7eb",borderRadius:6,padding:"6px 8px",fontSize:12,resize:"none",boxSizing:"border-box",outline:"none"}}/>
+              </div>
+            ))}
+          </div>
+          <div style={{background:"#fff",border:"1px solid #e5e7eb",borderRadius:12,padding:16,marginBottom:12}}>
+            <p style={{fontSize:11,fontWeight:700,color:"#9ca3af",textTransform:"uppercase",margin:"0 0 6px"}}>Observacoes Gerais</p>
+            <textarea rows={3} value={obs} onChange={e=>setObs(e.target.value)} placeholder="Ex: Aguardar alinhamento com CFO antes de confirmar item 5..." style={{width:"100%",border:"1px solid #e5e7eb",borderRadius:8,padding:"8px 12px",fontSize:13,resize:"none",boxSizing:"border-box",outline:"none"}}/>
+          </div>
+          <div style={{background:"#111827",borderRadius:12,padding:16,marginBottom:12}}>
+            <p style={{fontSize:11,fontWeight:700,color:"#9ca3af",textTransform:"uppercase",margin:"0 0 8px"}}>Preview do Documento</p>
+            <pre style={{color:"#86efac",fontSize:11,margin:0,whiteSpace:"pre-wrap",wordBreak:"break-word",maxHeight:200,overflow:"auto"}}>{buildDoc(c,gestor,dec,com,obs)}</pre>
+          </div>
+          <button onClick={copiar} style={{width:"100%",padding:"12px",borderRadius:10,fontSize:14,fontWeight:700,cursor:"pointer",border:"none",background:cp?"#22c55e":"#111827",color:"#fff",transition:"background 0.3s"}}>
+            {cp?"✅ Copiado com sucesso!":"📋 Copiar Documento"}
+          </button>
+          <div style={{background:"#eff6ff",border:"1px solid #bfdbfe",borderRadius:12,padding:14,marginTop:12}}>
+            <p style={{fontSize:12,fontWeight:700,color:"#1d4ed8",margin:"0 0 6px"}}>Como enviar o retorno:</p>
+            <ol style={{fontSize:12,color:"#1e40af",margin:0,paddingLeft:16}}>
+              <li>Clique em Copiar Documento acima</li>
+              <li>Cole no corpo do e-mail ou ticket</li>
+              <li>Envie para procurement@hotmart.com</li>
+              <li>MDM abre as tarefas em ate 5 dias uteis</li>
+            </ol>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+function App(){
+  const [carteira,setCarteira]=React.useState(0);
+  const c=CARTEIRAS[carteira];
+  return(
+    <div style={{maxWidth:900,margin:"0 auto",padding:16}}>
+      <div style={{background:"linear-gradient(135deg, "+c.cor+" 0%, #000 100%)",borderRadius:16,padding:24,marginBottom:20,color:"#fff"}}>
+        <p style={{fontSize:11,color:"rgba(255,255,255,0.5)",textTransform:"uppercase",letterSpacing:2,margin:"0 0 4px"}}>Business Review - Taxonomia de Procurement</p>
+        <h1 style={{fontSize:24,fontWeight:800,margin:"0 0 4px"}}>{c.emoji} Carteira: {c.nome}</h1>
+        <p style={{fontSize:13,color:"rgba(255,255,255,0.6)",margin:"0 0 20px"}}>Responsavel: {c.resp} · Spend Total: {c.spend} · v1.0 · Maio 2026</p>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:10}}>
+          {[["Commodities Ativas",c.kpis.ativas,"#93c5fd"],["A Migrar",c.kpis.migrar,"#fde047"],["Sunset",c.kpis.sunset,"#fca5a5"],["Novas",c.kpis.novas,"#86efac"]].map(([l,v,col])=>(
+            <div key={l} style={{background:"rgba(255,255,255,0.1)",borderRadius:10,padding:12,textAlign:"center"}}>
+              <p style={{fontSize:24,fontWeight:800,color:col,margin:0}}>{v}</p>
+              <p style={{fontSize:11,color:"rgba(255,255,255,0.6)",margin:0}}>{l}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div style={{display:"flex",gap:8,marginBottom:20,flexWrap:"wrap"}}>
+        {CARTEIRAS.map((ct,i)=>(
+          <button key={i} onClick={()=>setCarteira(i)} style={{padding:"8px 16px",borderRadius:10,fontSize:13,fontWeight:600,cursor:"pointer",border:"none",background:carteira===i?ct.cor:"#f3f4f6",color:carteira===i?"#fff":"#374151",transition:"all 0.2s"}}>
+            {ct.emoji} {ct.nome}
+          </button>
+        ))}
+      </div>
+
+      <Painel key={c.id} c={c}/>
+
+      <div style={{textAlign:"center",marginTop:24,padding:16,color:"#9ca3af",fontSize:12}}>
+        Hotmart Procurement · MDM Taxonomy Review v1.0 · 2026
+      </div>
+    </div>
+  );
+}
+
+const root=ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App/>);
+</script>
+</body>
+</html>
